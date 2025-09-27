@@ -18,6 +18,22 @@ test("search words including 'ヴァヴィヴヴェヴォ' by 'ばびぶべぼ'"
   expect(results[0].ja).toBe("ヴェル・ゴレット");
 });
 
+test("search by pronunciation", () => {
+  const results = search("げっしん");
+  expect(results[0].ja).toBe("月神");
+});
+
+test("order-based search", () => {
+  const store = useDictionaryStore();
+  store.updateSearchQuery("神里綾華");
+
+  const results = store.searchResults;
+  const resultTitles = results.map(word => word.ja);
+
+  expect(resultTitles.indexOf("神里綾華")).toBe(0);
+  expect(resultTitles.indexOf("お嬢")).toBeGreaterThan(0);
+});
+
 const fixtures = [
   {
     result: "Geo Archon",

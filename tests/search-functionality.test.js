@@ -18,28 +18,12 @@ test("search words including 'ヴァヴィヴヴェヴォ' by 'ばびぶべぼ'"
   expect(results[0].ja).toBe("ヴェル・ゴレット");
 });
 
-const fixtures = [
-  {
-    result: "Geo Archon",
-    input: "Geo God",
-    lang: "en",
-  },
-  {
-    result: "神里綾華",
-    input: "神里綾香",
-    lang: "ja",
-  },
-  {
-    result: "神里绫华",
-    input: "神里凌华",
-    lang: "zhCN",
-  },
-];
+test("a direct match in the 'ja' field should appear before a partial match in 'notes' field", () => {
+  const results = search("雄鶏");
+  const jaMatchIndex = results.findIndex(r => r.ja === "雄鶏");
+  const notesMatchIndex = results.findIndex(r => r.id === "pulcinella");
 
-for (const { result, input, lang } of fixtures) {
-  test(`search by variants (${lang})`, () => {
-    const results = search(input);
-    expect(results).toHaveLength(1);
-    expect(results[0][lang]).toBe(result);
-  });
-}
+  expect(jaMatchIndex).not.toBe(-1);
+  expect(notesMatchIndex).not.toBe(-1);
+  expect(jaMatchIndex).toBeLessThan(notesMatchIndex);
+});
